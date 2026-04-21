@@ -1,0 +1,27 @@
+{
+  "description": "過去に生成した記事の履歴。商品・テーマの重複を避けるために参照する。新しい記事を書く前に必ず articles[].products を確認し、同じ商品の再登場を避けること。",
+  "articles": [
+    {
+      "date": "2026-04-21",
+      "genreKey": "gadget",
+      "genreLabel": "ガジェット・PC周辺機器",
+      "title": "【2026年4月】ガジェット・PC周辺機器の注目新製品おすすめ5選",
+      "outputFile": "output/20260421_gadget.md",
+      "dataFile": "output/20260421_gadget_data.json",
+      "products": [
+        "Sony WF-1000XM6",
+        "Anker Nano Power Bank (10000mAh, 45W, 巻取り式USB-Cケーブル)",
+        "Logitech G PRO X2 SUPERSTRIKE",
+        "Satechi Slim LX3 Keyboard",
+        "Razer Hammerhead V3 HyperSpeed"
+      ],
+      "themes": [
+        "ワイヤレスイヤホン",
+        "モバイルバッテリー",
+        "ゲーミングマウス",
+        "Mac対応キーボード",
+        "ゲーミングワイヤレスイヤホン"
+      ]
+    }
+  ]
+}
