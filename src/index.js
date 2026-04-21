@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // note-amazon-pipeline CLI エントリポイント
+// APIは使わず、Claude Proチャットに貼り付けるプロンプトを生成 → 得られた記事本文を --finalize で仕上げる
 
-import 'dotenv/config';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -9,7 +9,7 @@ import { Command } from 'commander';
 
 import { scrapeProducts, scrapeByQuery } from './scraper.js';
 import { enrichProductsWithLinks } from './links.js';
-import { generateArticle } from './article.js';
+import { buildChatPrompt } from './article.js';
 import {
   buildTitle,
   buildArticleHeader,
@@ -54,7 +54,7 @@ function slugify(text) {
   );
 }
 
-async function runForGenre({ genreKey, genre, settings, count, date = new Date() }) {
+async function prepareForGenre({ genreKey, genre, settings, count, date = new Date() }) {
   const itemCount = count ?? settings.defaultItemCount ?? 5;
   const genreLabel = genre.label;
 
@@ -67,7 +67,7 @@ async function runForGenre({ genreKey, genre, settings, count, date = new Date()
   });
 
   if (rawProducts.length === 0) {
-    console.warn(`⚠️  ${genreLabel}: 商品が見つからなかったため記事生成をスキップします`);
+    console.warn(`⚠️  ${genreLabel}: 商品が見つからなかったためプロンプト生成をスキップします`);
     return null;
   }
 
@@ -80,31 +80,33 @@ async function runForGenre({ genreKey, genre, settings, count, date = new Date()
     date,
   });
 
-  console.log('📝 記事を生成中...');
-  const { body, usage, model } = await generateArticle({
-    title,
-    genreLabel,
-    products,
-  });
-
-  const header = buildArticleHeader({ genreKey, genreLabel, date });
-  const footer = buildArticleFooter({ genreKey });
-  const full = `${header}${body}\n${footer}`;
+  const prompt = buildChatPrompt({ title, genreLabel, genreKey, products });
 
   await ensureOutputDir();
-  const filename = `${formatDateStamp(date)}_${slugify(genreKey)}.md`;
-  const outputPath = path.join(OUTPUT_DIR, filename);
-  await fs.writeFile(outputPath, full, 'utf-8');
+  const stamp = formatDateStamp(date);
+  const slug = slugify(genreKey);
+  const promptPath = path.join(OUTPUT_DIR, `${stamp}_${slug}_prompt.md`);
+  const dataPath = path.join(OUTPUT_DIR, `${stamp}_${slug}_data.json`);
 
-  console.log(`✅ 完了: ${outputPath}`);
-  console.log(
-    `   モデル: ${model} / 入力: ${usage.input_tokens} tok / 出力: ${usage.output_tokens} tok`,
+  await fs.writeFile(promptPath, prompt, 'utf-8');
+  await fs.writeFile(
+    dataPath,
+    JSON.stringify({ title, genreKey, genreLabel, products }, null, 2),
+    'utf-8',
   );
 
-  return outputPath;
+  console.log(`✅ プロンプト生成完了`);
+  console.log(`   プロンプト: ${promptPath}`);
+  console.log(`   商品データ: ${dataPath}`);
+  console.log(`\n👉 次のステップ:`);
+  console.log(`   1. ${promptPath} の内容を Claude Pro チャットに貼り付ける`);
+  console.log(`   2. Claudeが出力した記事本文を任意の .md ファイルに保存`);
+  console.log(`   3. node src/index.js --finalize <その.mdファイル> --genre ${genreKey}`);
+
+  return promptPath;
 }
 
-async function runForQuery({ query, settings, count, date = new Date() }) {
+async function prepareForQuery({ query, settings, count, date = new Date() }) {
   const itemCount = count ?? settings.defaultItemCount ?? 5;
 
   console.log(`\n🎯 カスタムクエリ: "${query}" / ${itemCount}件`);
@@ -113,7 +115,7 @@ async function runForQuery({ query, settings, count, date = new Date() }) {
   const rawProducts = await scrapeByQuery({ query, count: itemCount });
 
   if (rawProducts.length === 0) {
-    console.warn('⚠️  商品が見つからなかったため記事生成をスキップします');
+    console.warn('⚠️  商品が見つからなかったためプロンプト生成をスキップします');
     return null;
   }
 
@@ -129,27 +131,47 @@ async function runForQuery({ query, settings, count, date = new Date() }) {
     date,
   });
 
-  console.log('📝 記事を生成中...');
-  const { body, usage, model } = await generateArticle({
-    title,
-    genreLabel,
-    products,
-  });
+  const prompt = buildChatPrompt({ title, genreLabel, genreKey, products });
+
+  await ensureOutputDir();
+  const stamp = formatDateStamp(date);
+  const promptPath = path.join(OUTPUT_DIR, `${stamp}_${genreKey}_prompt.md`);
+  const dataPath = path.join(OUTPUT_DIR, `${stamp}_${genreKey}_data.json`);
+
+  await fs.writeFile(promptPath, prompt, 'utf-8');
+  await fs.writeFile(
+    dataPath,
+    JSON.stringify({ title, genreKey, genreLabel, products }, null, 2),
+    'utf-8',
+  );
+
+  console.log(`✅ プロンプト生成完了`);
+  console.log(`   プロンプト: ${promptPath}`);
+  console.log(`   商品データ: ${dataPath}`);
+  console.log(`\n👉 次のステップ:`);
+  console.log(`   1. ${promptPath} の内容を Claude Pro チャットに貼り付ける`);
+  console.log(`   2. Claudeが出力した記事本文を任意の .md ファイルに保存`);
+  console.log(`   3. node src/index.js --finalize <その.mdファイル> --genre ${genreKey}`);
+
+  return promptPath;
+}
+
+async function finalizeArticle({ bodyPath, genreKey, genreLabel, date = new Date() }) {
+  const body = (await fs.readFile(bodyPath, 'utf-8')).trim();
+  if (!body) {
+    throw new Error(`記事本文が空です: ${bodyPath}`);
+  }
 
   const header = buildArticleHeader({ genreKey, genreLabel, date });
   const footer = buildArticleFooter({ genreKey });
   const full = `${header}${body}\n${footer}`;
 
   await ensureOutputDir();
-  const filename = `${formatDateStamp(date)}_${genreKey}.md`;
+  const filename = `${formatDateStamp(date)}_${slugify(genreKey)}.md`;
   const outputPath = path.join(OUTPUT_DIR, filename);
   await fs.writeFile(outputPath, full, 'utf-8');
 
-  console.log(`✅ 完了: ${outputPath}`);
-  console.log(
-    `   モデル: ${model} / 入力: ${usage.input_tokens} tok / 出力: ${usage.output_tokens} tok`,
-  );
-
+  console.log(`✅ 最終記事を保存: ${outputPath}`);
   return outputPath;
 }
 
@@ -158,27 +180,18 @@ async function main() {
 
   program
     .name('note-amazon-pipeline')
-    .description('noteに投稿するAmazonアソシエイト記事を自動生成するCLIツール')
+    .description('Claude Proチャットと連携してnote向けAmazonアソシエイト記事を生成するCLI')
     .option('-g, --genre <genre>', 'ジャンルキー (例: gadget, ai-books)')
     .option('-q, --query <query>', 'カスタム検索キーワード')
     .option('-c, --count <n>', '記事内の商品数', (v) => parseInt(v, 10))
-    .option('-a, --all', '全ジャンルを一括生成')
+    .option('-a, --all', '全ジャンルを一括でプロンプト生成')
+    .option(
+      '--finalize <file>',
+      'Claudeが出力した記事本文ファイルを指定してヘッダー/フッター付き最終版を保存',
+    )
     .parse(process.argv);
 
   const opts = program.opts();
-
-  if (!opts.genre && !opts.query && !opts.all) {
-    console.error('❌ --genre, --query, --all のいずれかを指定してください');
-    program.help({ error: true });
-  }
-
-  if (!process.env.ANTHROPIC_API_KEY) {
-    console.error(
-      '❌ ANTHROPIC_API_KEY が設定されていません。.env ファイルまたは環境変数で設定してください。',
-    );
-    process.exit(1);
-  }
-
   const settings = await loadSettings();
 
   if (!settings.associateTag || settings.associateTag === 'YOUR_ASSOCIATE_TAG-22') {
@@ -189,11 +202,35 @@ async function main() {
 
   const date = new Date();
 
+  // --finalize モード: 記事本文ファイル → ヘッダー/フッター付き最終版
+  if (opts.finalize) {
+    if (!opts.genre && !opts.query) {
+      console.error('❌ --finalize には --genre か --query のいずれかが必要です');
+      process.exit(1);
+    }
+    const genreKey = opts.genre ?? slugify(opts.query);
+    const genreLabel =
+      (opts.genre && settings.genres[opts.genre]?.label) || opts.query || genreKey;
+    await finalizeArticle({
+      bodyPath: opts.finalize,
+      genreKey,
+      genreLabel,
+      date,
+    });
+    return;
+  }
+
+  // prepareモード: スクレイピング → プロンプト生成
+  if (!opts.genre && !opts.query && !opts.all) {
+    console.error('❌ --genre, --query, --all, --finalize のいずれかを指定してください');
+    program.help({ error: true });
+  }
+
   if (opts.all) {
     const outputs = [];
     for (const [genreKey, genre] of Object.entries(settings.genres)) {
       try {
-        const out = await runForGenre({
+        const out = await prepareForGenre({
           genreKey,
           genre,
           settings,
@@ -205,12 +242,12 @@ async function main() {
         console.error(`❌ ${genreKey} の処理中にエラー: ${err.message}`);
       }
     }
-    console.log(`\n🎉 全ジャンル処理完了: ${outputs.length}件の記事を生成`);
+    console.log(`\n🎉 全ジャンル処理完了: ${outputs.length}件のプロンプトを生成`);
     return;
   }
 
   if (opts.query) {
-    await runForQuery({ query: opts.query, settings, count: opts.count, date });
+    await prepareForQuery({ query: opts.query, settings, count: opts.count, date });
     return;
   }
 
@@ -221,7 +258,7 @@ async function main() {
     process.exit(1);
   }
 
-  await runForGenre({
+  await prepareForGenre({
     genreKey: opts.genre,
     genre,
     settings,

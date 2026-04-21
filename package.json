@@ -1,7 +1,7 @@
 {
   "name": "note-amazon-pipeline",
-  "version": "0.1.0",
-  "description": "noteに投稿するAmazonアソシエイト記事を自動生成するCLIツール",
+  "version": "0.2.0",
+  "description": "Claude Proチャットと連携してnote向けAmazonアソシエイト記事を生成するCLIツール",
   "type": "module",
   "main": "src/index.js",
   "bin": {
@@ -18,15 +18,12 @@
     "amazon",
     "associate",
     "cli",
-    "anthropic",
     "claude"
   ],
   "license": "MIT",
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.90.0",
     "cheerio": "^1.0.0",
     "commander": "^12.1.0",
-    "dotenv": "^16.4.5",
     "node-fetch": "^3.3.2"
   },
   "engines": {

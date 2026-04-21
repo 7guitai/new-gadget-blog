@@ -1,31 +1,32 @@
 # note-amazon-pipeline
 
-noteに投稿するAmazonアソシエイト記事（新製品・新刊まとめ）を自動生成するCLIツール。
+noteに投稿するAmazonアソシエイト記事（新製品・新刊まとめ）を、**Claude Proチャットと連携して**生成するCLIツール。
+Anthropic APIキーは不要。CLIが商品スクレイピング + プロンプト生成を行い、ユーザーがClaude Proチャットにプロンプトを貼り付け、得られた記事本文をCLIに戻すと最終版が保存される。
 
 ## セットアップ
 
 ```bash
 npm install
-cp .env.example .env
-# .env を編集して ANTHROPIC_API_KEY を設定
 ```
+
+APIキーは不要（スクレイピングはDuckDuckGo、記事生成はClaude Proチャット側）。
 
 ## 環境変数
 
-- `ANTHROPIC_API_KEY` (必須): Anthropic APIキー
 - `DEBUG` (任意): 設定するとエラー時にスタックトレースを表示
 
 ## 使い方
 
+### 1. プロンプトを生成する
+
 ```bash
-# ジャンル指定で記事を生成
+# ジャンル指定でプロンプトを生成
 node src/index.js --genre gadget --count 5
-node src/index.js --genre ai-books --count 7
 
 # カスタムキーワードで生成
 node src/index.js --query "ワイヤレスイヤホン 2026 新製品" --count 5
 
-# 全ジャンル一括生成
+# 全ジャンル一括
 node src/index.js --all
 
 # npm script 経由
@@ -34,11 +35,35 @@ npm run ai-books
 npm run all
 ```
 
+実行すると以下の2ファイルが `output/` に生成されます:
+
+- `YYYYMMDD_{genre}_prompt.md` — **Claude Proチャットに貼り付けるプロンプト**
+- `YYYYMMDD_{genre}_data.json` — スクレイピング結果（参考用）
+
+### 2. Claude Proチャットに貼り付けて記事本文を生成
+
+`*_prompt.md` の内容をすべてコピーし、Claude Pro（web/デスクトップ/このCLIのチャット等）に貼り付けます。Claudeが記事本文を出力します。
+
+出力された記事本文をテキストファイル（例: `draft.md`）に保存してください。
+
+### 3. ヘッダー/フッターを付けて最終版を保存
+
+```bash
+node src/index.js --finalize draft.md --genre gadget
+```
+
+`output/YYYYMMDD_{genre}.md` として以下が付与された最終版が保存されます:
+
+- ファイル冒頭: 生成日時・ジャンルのHTMLコメント
+- ファイル末尾: Amazonアソシエイトの免責表示 + ハッシュタグ
+
+`--query` で生成した場合は `--genre` の代わりに同じ `--query` を指定するか、`--genre <slug>` にクエリ由来のスラッグを渡してください。
+
 ## 設定のカスタマイズ
 
 `config/settings.json` を編集:
 
-- `associateTag`: 自分のAmazonアソシエイトID (例: `yourid-22`)
+- `associateTag`: 自分のAmazonアソシエイトID（現在 `kobebooka1-22`）
 - `defaultItemCount`: 記事1本あたりの商品数デフォルト
 - `genres`: ジャンル定義（検索クエリ、ラベル、キーワード）
 
@@ -59,20 +84,21 @@ npm run all
 
 ## 出力
 
-`output/YYYYMMDD_{genre}.md` として記事が保存されます。
-ファイル冒頭にHTMLコメントで生成日時・ジャンルが記録されます。
+- `output/YYYYMMDD_{genre}_prompt.md`: Claude Proチャット貼り付け用プロンプト
+- `output/YYYYMMDD_{genre}_data.json`: スクレイピングした商品情報（参考）
+- `output/YYYYMMDD_{genre}.md`: `--finalize` で生成される最終記事（ヘッダー + 本文 + フッター）
 
 ## モジュール構成
 
-- `src/index.js`: CLIエントリポイント
+- `src/index.js`: CLIエントリポイント（prepare / finalize 両モード）
 - `src/scraper.js`: Web検索 & 商品情報スクレイピング (DuckDuckGo HTML版 + cheerio)
 - `src/links.js`: Amazonアソシエイトリンク生成（ASIN→商品URL、なければ検索URLにフォールバック）
-- `src/article.js`: Anthropic APIで記事本文生成（`claude-sonnet-4-6`、プロンプトキャッシュ有効）
+- `src/article.js`: Claude Proチャット貼り付け用のプロンプトを生成（APIコールなし）
 - `src/templates.js`: タイトル・ハッシュタグ・定型文テンプレート
 
 ## 注意事項
 
-- `config/settings.json` の `associateTag` を必ず自分のタグに変更してください
+- `config/settings.json` の `associateTag` を自分のタグに変更してください（現在 `kobebooka1-22`）
 - スクレイピングは1リクエスト/秒にレート制限しています
 - 生成された記事は必ず目視確認してからnoteに投稿してください
 - Amazonアソシエイト規約・noteの利用規約を遵守してください

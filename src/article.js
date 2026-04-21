@@ -1,11 +1,7 @@
-// Anthropic APIで記事本文を生成
+// Claude Proチャット貼り付け用のプロンプトを生成するモジュール
+// （APIは使わず、ユーザーがこのチャットに貼り付けて記事本文を得るフロー）
 
-import Anthropic from '@anthropic-ai/sdk';
-
-const MODEL = 'claude-sonnet-4-6';
-const MAX_TOKENS = 8000;
-
-const SYSTEM_PROMPT = `あなたはnoteに投稿するAmazonアソシエイト記事を書く専門ライターです。
+export const SYSTEM_PROMPT = `あなたはnoteに投稿するAmazonアソシエイト記事を書く専門ライターです。
 
 ## 記事のルール
 - 文体: ですます調、カジュアルだが信頼感のあるトーン
@@ -76,47 +72,32 @@ function buildUserMessage({ title, genreLabel, products }) {
   ].join('\n');
 }
 
-export async function generateArticle({ title, genreLabel, products }) {
-  if (!process.env.ANTHROPIC_API_KEY) {
-    throw new Error(
-      'ANTHROPIC_API_KEY が設定されていません。.env ファイルまたは環境変数で設定してください。',
-    );
-  }
+// Claude Proチャットに貼り付ける用のMarkdown文字列を生成する
+export function buildChatPrompt({ title, genreLabel, genreKey, products }) {
+  const userMessage = buildUserMessage({ title, genreLabel, products });
+  const finalizeHint = `node src/index.js --finalize <article.md> --genre ${genreKey}`;
 
-  if (!Array.isArray(products) || products.length === 0) {
-    throw new Error('products は1件以上必要です');
-  }
-
-  const client = new Anthropic();
-
-  const response = await client.messages.create({
-    model: MODEL,
-    max_tokens: MAX_TOKENS,
-    system: [
-      {
-        type: 'text',
-        text: SYSTEM_PROMPT,
-        cache_control: { type: 'ephemeral' },
-      },
-    ],
-    messages: [
-      {
-        role: 'user',
-        content: buildUserMessage({ title, genreLabel, products }),
-      },
-    ],
-  });
-
-  const textBlocks = response.content.filter((b) => b.type === 'text');
-  if (textBlocks.length === 0) {
-    throw new Error('Anthropic APIがテキスト応答を返しませんでした');
-  }
-
-  const body = textBlocks.map((b) => b.text).join('\n').trim();
-
-  return {
-    body,
-    usage: response.usage,
-    model: response.model,
-  };
+  return [
+    '# Claude Proチャット貼り付け用プロンプト',
+    '',
+    '以下の区切り線（===）より下の内容をすべてコピーし、Claude Proチャットに貼り付けてください。',
+    'Claudeが出力した記事本文を `.md` ファイルとして保存し、次のコマンドでヘッダー/フッターを付けて最終版を作れます:',
+    '',
+    '```',
+    finalizeHint,
+    '```',
+    '',
+    '==========================================================================',
+    '',
+    '## 役割（システム指示）',
+    '',
+    SYSTEM_PROMPT,
+    '',
+    '---',
+    '',
+    '## リクエスト',
+    '',
+    userMessage,
+    '',
+  ].join('\n');
 }
