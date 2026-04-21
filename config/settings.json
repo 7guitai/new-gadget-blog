@@ -1,0 +1,38 @@
+{
+  "associateTag": "YOUR_ASSOCIATE_TAG-22",
+  "defaultItemCount": 5,
+  "genres": {
+    "gadget": {
+      "label": "ガジェット・PC周辺機器",
+      "searchQueries": [
+        "Amazon 新製品 ガジェット {year}年{month}月",
+        "おすすめ ガジェット 新作 {year}"
+      ],
+      "keywords": ["ガジェット", "PC周辺機器", "デスク環境"]
+    },
+    "ai-books": {
+      "label": "AI関連書籍",
+      "searchQueries": [
+        "AI 新刊 本 {year}年{month}月",
+        "ChatGPT Claude 書籍 新刊 {year}"
+      ],
+      "keywords": ["AI", "ChatGPT", "Claude", "機械学習"]
+    },
+    "guitar": {
+      "label": "ギター・エフェクター",
+      "searchQueries": [
+        "エフェクター 新製品 {year}年",
+        "ギター 機材 新作 おすすめ {year}"
+      ],
+      "keywords": ["ギター", "エフェクター", "音楽機材"]
+    },
+    "fashion": {
+      "label": "ファッション",
+      "searchQueries": [
+        "Amazon Fashion 新作 おすすめ {year}年 {season}",
+        "メンズファッション トレンド {year}"
+      ],
+      "keywords": ["ファッション", "メンズ", "コーデ"]
+    }
+  }
+}

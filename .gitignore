@@ -1,0 +1,6 @@
+node_modules/
+.env
+output/*.md
+!output/.gitkeep
+npm-debug.log*
+.DS_Store

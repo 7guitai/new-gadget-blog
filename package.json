@@ -1,0 +1,35 @@
+{
+  "name": "note-amazon-pipeline",
+  "version": "0.1.0",
+  "description": "noteに投稿するAmazonアソシエイト記事を自動生成するCLIツール",
+  "type": "module",
+  "main": "src/index.js",
+  "bin": {
+    "note-amazon-pipeline": "src/index.js"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "gadget": "node src/index.js --genre gadget",
+    "ai-books": "node src/index.js --genre ai-books",
+    "all": "node src/index.js --all"
+  },
+  "keywords": [
+    "note",
+    "amazon",
+    "associate",
+    "cli",
+    "anthropic",
+    "claude"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.90.0",
+    "cheerio": "^1.0.0",
+    "commander": "^12.1.0",
+    "dotenv": "^16.4.5",
+    "node-fetch": "^3.3.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
