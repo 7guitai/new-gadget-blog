@@ -1,8 +1,4 @@
 node_modules/
 .env
-output/*.md
-output/*.json
-!output/.gitkeep
-!output/history.json
 npm-debug.log*
 .DS_Store

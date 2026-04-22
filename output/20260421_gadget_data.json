@@ -1,0 +1,68 @@
+{
+  "title": "【2026年4月】ガジェット・PC周辺機器の注目新製品おすすめ5選",
+  "genreKey": "gadget",
+  "genreLabel": "ガジェット・PC周辺機器",
+  "generatedAt": "2026-04-21",
+  "products": [
+    {
+      "name": "Sony WF-1000XM6",
+      "category": "ワイヤレスイヤホン",
+      "price": "約45,000円",
+      "releaseDate": "2026年",
+      "features": [
+        "前モデル比で大幅に進化したアクティブノイズキャンセリング",
+        "WF-1000XM5より約11%スリム化された本体",
+        "LDAC対応の高解像度ワイヤレス再生"
+      ],
+      "associateLink": "https://www.amazon.co.jp/s?k=Sony+WF-1000XM6&tag=kobebooka1-22"
+    },
+    {
+      "name": "Anker Nano Power Bank (10000mAh, 45W, 巻取り式USB-Cケーブル)",
+      "category": "モバイルバッテリー",
+      "price": "約6,000円",
+      "releaseDate": "2026年",
+      "features": [
+        "USB-Cケーブルを本体内蔵し巻取り式で収納",
+        "最大45W出力でノートPC充電にも実用的",
+        "PD 3.1対応で複数機器の同時充電も最適化"
+      ],
+      "associateLink": "https://www.amazon.co.jp/s?k=Anker+Nano+Power+Bank+10000mAh+45W+%E5%B7%BB%E5%8F%96%E5%BC%8F&tag=kobebooka1-22"
+    },
+    {
+      "name": "Logitech G PRO X2 SUPERSTRIKE",
+      "category": "ゲーミングマウス",
+      "price": "約30,000円",
+      "releaseDate": "2026年",
+      "features": [
+        "磁気センサーで押し込み深さを可変アクチュエーション化",
+        "ハプティック振動で物理クリック感をシミュレート",
+        "軽量ボディで長時間プレイでも疲れにくい設計"
+      ],
+      "associateLink": "https://www.amazon.co.jp/s?k=Logitech+G+PRO+X2+SUPERSTRIKE&tag=kobebooka1-22"
+    },
+    {
+      "name": "Satechi Slim LX3 Keyboard",
+      "category": "Mac対応キーボード",
+      "price": "約10,000円",
+      "releaseDate": "2026年(CES 2026発表)",
+      "features": [
+        "MacBookのスペースブラック／シルバーに完全マッチする仕上げ",
+        "有線接続でバッテリー切れ・遅延の心配なし",
+        "テンキーレスのスリム設計で省スペース"
+      ],
+      "associateLink": "https://www.amazon.co.jp/s?k=Satechi+Slim+LX3+Keyboard&tag=kobebooka1-22"
+    },
+    {
+      "name": "Razer Hammerhead V3 HyperSpeed",
+      "category": "ゲーミングワイヤレスイヤホン",
+      "price": "約20,000円",
+      "releaseDate": "2026年4月10日",
+      "features": [
+        "独自HyperSpeed Wirelessによる超低遅延接続",
+        "PC・スマホ・コンシューマーのマルチプラットフォーム対応",
+        "軽量ボディで通勤・外出先でも負担が少ない"
+      ],
+      "associateLink": "https://www.amazon.co.jp/s?k=Razer+Hammerhead+V3+HyperSpeed&tag=kobebooka1-22"
+    }
+  ]
+}
