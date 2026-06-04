@@ -22,6 +22,28 @@
         "Mac対応キーボード",
         "ゲーミングワイヤレスイヤホン"
       ]
+    },
+    {
+      "date": "2026-06-04",
+      "genreKey": "ai-books",
+      "genreLabel": "AI関連書籍",
+      "title": "【2026年6月】AI関連書籍の注目新刊おすすめ5選",
+      "outputFile": "output/20260604_ai-books.md",
+      "dataFile": "output/20260604_ai-books_data.json",
+      "products": [
+        "LLMのプロンプトエンジニアリング ―GitHub Copilotを生んだ開発者が教える生成AIアプリケーション開発",
+        "つくりながら学ぶ！LLM自作入門",
+        "改訂3版【マンガでわかる】生成AI「Claude」パーフェクトガイド",
+        "ChatGPTの応答精度はプロンプトが9割",
+        "Claudeを最強AIに育てる超裏技100"
+      ],
+      "themes": [
+        "プロンプトエンジニアリング",
+        "LLM自作 / 内部実装",
+        "Claude入門 (初心者向け)",
+        "ChatGPT実践 / プロンプトテンプレ",
+        "Claude上級活用 / 裏技"
+      ]
     }
   ]
 }

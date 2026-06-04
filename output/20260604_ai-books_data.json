@@ -1,0 +1,74 @@
+{
+  "title": "【2026年6月】AI関連書籍の注目新刊おすすめ5選",
+  "genreKey": "ai-books",
+  "genreLabel": "AI関連書籍",
+  "generatedAt": "2026-06-04",
+  "products": [
+    {
+      "name": "LLMのプロンプトエンジニアリング —GitHub Copilotを生んだ開発者が教える生成AIアプリケーション開発",
+      "author": "John Berryman, Albert Ziegler 著 / 服部佑樹, 佐藤直生 訳",
+      "publisher": "オーム社",
+      "category": "プロンプトエンジニアリング / LLMアプリ開発",
+      "price": "約3,500円",
+      "asin": "4814401132",
+      "features": [
+        "GitHub Copilot開発者が現場知見をベースに体系化",
+        "プロンプト設計を再現可能な技術として学べる",
+        "LLMの挙動を踏まえたアプリ開発の実例が豊富"
+      ],
+      "associateLink": "https://www.amazon.co.jp/dp/4814401132?tag=kobebooka1-22"
+    },
+    {
+      "name": "つくりながら学ぶ！LLM自作入門",
+      "author": "Sebastian Raschka 著",
+      "publisher": "技術書系",
+      "category": "LLM実装 / PyTorch",
+      "price": "約4,500円",
+      "features": [
+        "Tokenizerの実装から命令チューニングまで一気通貫",
+        "PyTorchでLLMをゼロから自作する実践書",
+        "Amazonベストセラー入り、内部動作を完全理解できる"
+      ],
+      "associateLink": "https://www.amazon.co.jp/s?k=%E3%81%A4%E3%81%8F%E3%82%8A%E3%81%AA%E3%81%8C%E3%82%89%E5%AD%A6%E3%81%B6%EF%BC%81LLM%E8%87%AA%E4%BD%9C%E5%85%A5%E9%96%80&tag=kobebooka1-22"
+    },
+    {
+      "name": "改訂3版【マンガでわかる】生成AI「Claude」パーフェクトガイド",
+      "author": "—",
+      "publisher": "—",
+      "category": "Claude入門 / ビジネス活用",
+      "price": "約1,800円",
+      "features": [
+        "ストーリー形式のマンガで初心者でもスラスラ読める",
+        "Claudeの基本操作から実務活用テクまで網羅",
+        "改訂3版で2026年の最新仕様に追従"
+      ],
+      "associateLink": "https://www.amazon.co.jp/s?k=%E3%83%9E%E3%83%B3%E3%82%AC%E3%81%A7%E3%82%8F%E3%81%8B%E3%82%8B+%E7%94%9F%E6%88%90AI+Claude+%E3%83%91%E3%83%BC%E3%83%95%E3%82%A7%E3%82%AF%E3%83%88%E3%82%AC%E3%82%A4%E3%83%89&tag=kobebooka1-22"
+    },
+    {
+      "name": "ChatGPTの応答精度はプロンプトが9割",
+      "author": "—",
+      "publisher": "—",
+      "category": "ChatGPT実践 / プロンプト",
+      "price": "約1,700円",
+      "features": [
+        "ChatGPTの回答品質を引き出すプロンプトのコツを解説",
+        "文書作成・要約・翻訳・Excel活用など実務シーン中心",
+        "非エンジニアでもすぐ試せるテンプレート集つき"
+      ],
+      "associateLink": "https://www.amazon.co.jp/s?k=ChatGPT%E3%81%AE%E5%BF%9C%E7%AD%94%E7%B2%BE%E5%BA%A6%E3%81%AF%E3%83%97%E3%83%AD%E3%83%B3%E3%83%97%E3%83%88%E3%81%8C9%E5%89%B2&tag=kobebooka1-22"
+    },
+    {
+      "name": "Claudeを最強AIに育てる超裏技100",
+      "author": "—",
+      "publisher": "—",
+      "category": "Claude活用 / 上級テクニック",
+      "price": "約1,900円",
+      "features": [
+        "Claudeを業務で使い倒すための裏技を100本収録",
+        "Projects・MCP・Claude Codeなど最新機能の活用例",
+        "Amazonホットニューリリース入りの2026年注目作"
+      ],
+      "associateLink": "https://www.amazon.co.jp/s?k=Claude%E3%82%92%E6%9C%80%E5%BC%B7AI%E3%81%AB%E8%82%B2%E3%81%A6%E3%82%8B%E8%B6%85%E8%A3%8F%E6%8A%80100&tag=kobebooka1-22"
+    }
+  ]
+}
